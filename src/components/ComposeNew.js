@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
+import * as firebase from 'firebase';
 
 
 var fetchAction =  require('node-fetch');
@@ -53,12 +54,17 @@ export default class ComposeNew extends React.Component {
   sendnotif(){
 
     var key = "AIzaSyClPBf8lbhy-gZ6kGKiXr5ZhTjtHhH8Ero";
-    var to = "cT_afMqUTuI:APA91bF2Xywd6fD-z7PO69qDT_UUdycWZ-icLRQJqmm5EAz1uJ-SjkEOQhCTx0DtcLYAxv_CHwjqKo-YcXsZ59x5y1rZlJxVHH6fLNiLZgtYEhqsQ7Ghc-y8Ob8CHomXXd-4T58zd-m-";
+    const fbmsg = firebase.messaging();
+    var to = fbmsg.getToken();
+    console.log("toID :",to);
+
     var notification = {
       'title': this.state.values,
       'body': this.state.message,
+      'icon': '/images/notify.png',
+      'click_action': 'http://localhost:3002/home'
     };
-    
+
     fetch('https://fcm.googleapis.com/fcm/send', {
       'method': 'POST',
       'headers': {
@@ -68,13 +74,14 @@ export default class ComposeNew extends React.Component {
       'body': JSON.stringify({
         'notification': notification,
         'to': to
+
       })
     }).then(function(response) {
       console.log("SUCCESSFUL",response);
-    }).catch(function(error) {  
+    }).catch(function(error) {
       console.error("FAILED",error);
     })
-    
+
     }
 
   change = (e) => {

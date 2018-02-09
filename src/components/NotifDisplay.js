@@ -16,7 +16,7 @@ class NotifDisplay extends React.Component {
   {
   super();
   this.state={
-  ndata: "Connecting to Firebase...",
+  ndata: "(^_^) Notifications supported !!",
   notif:"",
   peer:"",
   };
@@ -24,38 +24,30 @@ class NotifDisplay extends React.Component {
 
 
   componentDidMount()
-  { 
-    const db = firebase.database();
+  {
     const msg = firebase.messaging();
-
 
     msg.requestPermission()
      .then(function() {
-  console.log('Notification permission granted.');
+  console.log('*Notification permission granted*');
   return msg.getToken();
      })
     .then(function(tokens){
   console.log(tokens);
      })
      .catch(function(err) {
-      console.log('Unable to get permission to notify.', err);
+       console.log("ERROR: Notifications not supported on this browser !!");
     });
 
     msg.onMessage(payload => {
       console.log('onMessage:',payload);
       this.setState({ notif: payload.notification.body, peer: payload.notification.title });
     });
-    
-    const dbRef = db.ref().child('messages');
-    dbRef.on('value',snapshot =>{
-    this.setState({
-      ndata: JSON.stringify(snapshot.val(),null,3)
-    });
-  })
+
   }
 
 render() {
-  
+
   return(
   <div>
   <Paper style={style} zDepth={3} >
