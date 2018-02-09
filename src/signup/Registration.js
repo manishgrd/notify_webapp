@@ -18,7 +18,7 @@ import React,{Component} from 'react';
       const email=this.refs.email.value;  //retrieving value of email
       const phone=this.refs.phone.value;
       console.log(data);
-    return fetch('https://api.dankness95.hasura-app.io/register/'+fname+'/'+lname+'/'+uname+'/'+password+'/'+email+'/'+phone, {
+    return fetch('https://api.beneficence95.hasura-app.io/register/'+fname+'/'+lname+'/'+uname+'/'+password+'/'+email+'/'+phone, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

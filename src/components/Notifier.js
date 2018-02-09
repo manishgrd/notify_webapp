@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Registration.css';
+import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -10,7 +10,7 @@ class Notifier extends Component {
 
   render() {
     return (
-      <div>
+      <div className="App">
         <MuiThemeProvider>
         <Main />
         </MuiThemeProvider>

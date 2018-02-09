@@ -15,7 +15,7 @@ const style = {
 
 var fetchAction =  require('node-fetch');
 
-var url = "https://auth.dankness95.hasura-app.io/v1/user/logout";
+var url = "https://auth.beneficence95.hasura-app.io/v1/user/logout";
 
 var authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
 var headers = { "Authorization" : "Bearer " + authToken }

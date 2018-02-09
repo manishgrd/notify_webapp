@@ -11,7 +11,7 @@ import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bu
 
 var fetchAction =  require('node-fetch');
 
-var url = "https://data.dankness95.hasura-app.io/v1/query";
+var url = "https://data.beneficence95.hasura-app.io/v1/query";
 
 var requestOptions = {
     "method": "POST",

@@ -9,7 +9,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 var fetchAction =  require('node-fetch');
 
-var url = "https://data.dankness95.hasura-app.io/v1/query";
+var url = "https://data.beneficence95.hasura-app.io/v1/query";
 
 var requestOptions = {
     "method": "POST",
@@ -50,6 +50,33 @@ export default class ComposeNew extends React.Component {
                    })
   }
 
+  sendnotif(){
+
+    var key = "AIzaSyClPBf8lbhy-gZ6kGKiXr5ZhTjtHhH8Ero";
+    var to = "cT_afMqUTuI:APA91bF2Xywd6fD-z7PO69qDT_UUdycWZ-icLRQJqmm5EAz1uJ-SjkEOQhCTx0DtcLYAxv_CHwjqKo-YcXsZ59x5y1rZlJxVHH6fLNiLZgtYEhqsQ7Ghc-y8Ob8CHomXXd-4T58zd-m-";
+    var notification = {
+      'title': this.state.values,
+      'body': this.state.message,
+    };
+    
+    fetch('https://fcm.googleapis.com/fcm/send', {
+      'method': 'POST',
+      'headers': {
+        'Authorization': 'key=' + key,
+        'Content-Type': 'application/json'
+      },
+      'body': JSON.stringify({
+        'notification': notification,
+        'to': to
+      })
+    }).then(function(response) {
+      console.log("SUCCESSFUL",response);
+    }).catch(function(error) {  
+      console.error("FAILED",error);
+    })
+    
+    }
+
   change = (e) => {
     this.setState({
       [e.target.name]: e.target.value
@@ -59,8 +86,10 @@ export default class ComposeNew extends React.Component {
   onSubmit=(e) =>{
     e.preventDefault();
     console.log(this.state);
+    this.sendnotif();
     this.setState({
       message:"",
+      open:false,
     });
     console.log(this.state.message);
 }
