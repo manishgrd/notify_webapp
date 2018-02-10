@@ -11,7 +11,7 @@ import * as firebase from 'firebase';
 var fetchAction =  require('node-fetch');
 
 var url = "https://data.beneficence95.hasura-app.io/v1/query";
-
+var to="";
 var requestOptions = {
     "method": "POST",
     "headers": {
@@ -39,7 +39,18 @@ export default class ComposeNew extends React.Component {
     open: false,
     values: [],
     message: "",
+    mytoken: "",
   };
+
+getmytoken(){
+  const fbmsg = firebase.messaging();
+
+  fbmsg.getToken()
+  .then(function(tokens){
+  console.log(tokens);
+  to = tokens;
+   })
+}
 
  componentDidMount() {
   fetchAction(url, requestOptions)
@@ -49,13 +60,13 @@ export default class ComposeNew extends React.Component {
   .then((adata) => {
        names = adata.map((arr, index, adata) => {return arr.name})
                    })
+
+        this.getmytoken();
   }
 
   sendnotif(){
 
     var key = "AIzaSyClPBf8lbhy-gZ6kGKiXr5ZhTjtHhH8Ero";
-    const fbmsg = firebase.messaging();
-    var to = fbmsg.getToken();
     console.log("toID :",to);
 
     var notification = {
