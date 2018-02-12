@@ -1,7 +1,7 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Toolbar, ToolbarGroup} from 'material-ui/Toolbar';
-import ViewNmore from './ViewNmore';
+import Sidebar from './Sidebar';
 import ComposeNew from './ComposeNew';
 import { Link } from 'react-router-dom'
 
@@ -27,7 +27,7 @@ export default class ActionsBar extends React.Component {
         <ComposeNew />
         </ToolbarGroup>
         <ToolbarGroup>
-        <ViewNmore />
+        <Sidebar />
         </ToolbarGroup>
         <ToolbarGroup lastChild={false}>
           <Link to='/viewall'><RaisedButton label="ALL Notifications" primary={true} /></Link>

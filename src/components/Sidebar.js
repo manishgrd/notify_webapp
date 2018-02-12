@@ -19,13 +19,13 @@ var requestOptions = {
         "Content-Type": "application/json"
     }
 };
-
+//Todo : include file id/link in request sent to server to display each users profile image
 var body = {
     "type": "select",
     "args": {
-        "table": "author",
+        "table": "profile",
         "columns": [
-            "name"
+            "Full_name"
         ]
     }
 };
@@ -34,7 +34,7 @@ requestOptions.body = JSON.stringify(body);
 
 let names= [];
 
-export default class ViewNmore extends React.Component {
+export default class Sidebar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -50,7 +50,7 @@ export default class ViewNmore extends React.Component {
    	return response.json();
    })
    .then((adata) => {
-        names = adata.map((arr, index, adata) => {return arr.name})
+        names = adata.map((arr, index, adata) => {return arr.Full_name});
                     })
    }
 

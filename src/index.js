@@ -8,12 +8,12 @@ import * as firebase from 'firebase';
 
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyC1vO8nYgT1LrzLHpVnwvk4_q2sL-SgITM",
-    authDomain: "hpdfgt.firebaseapp.com",
-    databaseURL: "https://hpdfgt.firebaseio.com",
-    projectId: "hpdfgt",
-    storageBucket: "hpdfgt.appspot.com",
-    messagingSenderId: "77453129528"
+    apiKey: "AIzaSyDcFCf97JEsGNmkrcRwWpH6QEh_2Vx7YpA",
+    authDomain: "hasura-custom-notification.firebaseapp.com",
+    databaseURL: "https://hasura-custom-notification.firebaseio.com/",
+    projectId: "hasura-custom-notification",
+    storageBucket: "hasura-custom-notification.appspot.com",
+    messagingSenderId: "598821450820"
   };
   firebase.initializeApp(config);
 

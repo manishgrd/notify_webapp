@@ -8,46 +8,116 @@ const style = {
  textAlign: 'left',
 };
 
+var fetchAction =  require('node-fetch');
+var url = "https://auth.beneficence95.hasura-app.io/v1/user/info";
+var authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
+var requestOptions = {
+    "method": "GET",
+    "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + authToken,
+    }
+};
 
+var body = {};
 
-
-class NotifDisplay extends React.Component {
-  constructor()
+export default class NotifDisplay extends React.Component {
+  constructor(props)
   {
-  super();
+  super(props);
   this.state={
-  ndata: "(^_^) Notifications supported !!",
+  ndata:"* Notification status appears here *",
   notif:"",
   peer:"",
+  snack: false,
   };
   }
+
+sendTokentoServer()
+  {
+    firebase.messaging().getToken()
+    .then((tokens) => {
+    fetchAction(url, requestOptions)
+    .then((response) => {
+      return response.json();
+    })
+    .then((result) => {
+      url = "https://data.beneficence95.hasura-app.io/v1/query";
+      requestOptions = {
+          "method": "POST",
+          "headers": {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + authToken,
+          }
+      };
+   body = {
+    "type": "update",
+    "args": {
+        "table": "Token_map",
+        "where": { "$and": [
+              {"username": {  "$eq": result.username }  },
+              {"Hasura_id": {  "$eq": result.hasura_id } }
+            ]   },
+        "$set": {
+            "fcm_tkn": tokens,
+            "device": window.navigator.appVersion,
+        }
+    }
+};;
+      requestOptions.body = JSON.stringify(body);
+
+      fetchAction(url, requestOptions)
+      .then(function(response) {
+      	return response.json();
+      })
+      .then(function(result) {
+      	console.log(result);
+      })
+      .catch(function(error) {
+      	console.log('Token Updation:' + error);
+      });
+
+    })
+    .catch((error) => {
+      console.log('User info retrieval:' + error);
+    });
+
+
+    })
+    .catch((error) => {
+      console.log('Firebase Messaging:' + error);
+    });
+  }
+
 
 
   componentDidMount()
   {
-    const msg = firebase.messaging();
+    firebase.messaging().requestPermission()
+     .then(()=> {
+       console.log("PERMITTED");
+       this.setState({ndata: "Push Notifications ENABLED !!"});
+       this.sendTokentoServer();
+       })
+       .catch((err)=> {
+         this.setState({ndata: err.message});
+      });
 
-    msg.requestPermission()
-     .then(function() {
-  console.log('*Notification permission granted*');
-  return msg.getToken();
-     })
-    .then(function(tokens){
-  console.log(tokens);
-     })
-     .catch(function(err) {
-       console.log("ERROR: Notifications not supported on this browser !!");
-    });
-
-    msg.onMessage(payload => {
+    firebase.messaging().onMessage(payload => {
       console.log('onMessage:',payload);
-      this.setState({ notif: payload.notification.body, peer: payload.notification.title });
+      this.setState({ notif: payload.notification.body, peer: payload.notification.title, snack: true });
     });
 
   }
 
-render() {
+openSnackbar() {
 
+}
+
+// Todo : include date-time stamp from server for each received message or use js to indicate local time
+//Todo : include file id/link in request sent to server to display each users profile image
+
+render() {
   return(
   <div>
   <Paper style={style} zDepth={3} >
@@ -61,8 +131,8 @@ render() {
   </Card>
   </Paper>
   <Snackbar
-         open={true}
-         message="New Notification Received !!"
+         open={this.state.snack}
+         message="New Notification for you !!"
          autoHideDuration={5000}
        />
   </div>
@@ -71,5 +141,3 @@ render() {
 }
 
 }
-
-export default NotifDisplay;

@@ -18,21 +18,17 @@ var requestOptions = {
         "Content-Type": "application/json"
     }
 };
-
+//Todo: Limit to Include recent 6 results sent to the user logged in by matching "where"
 var body = {
     "type": "select",
     "args": {
-        "table": "article",
+        "table": "Token_map",
         "columns": [
-            "id",
-            {
-                "name": "author",
-                "columns": [
-                    "name"
-                ]
-            },
-            "title"
-        ]
+            "tkn_id",
+            "username",
+            "fcm_tkn"
+        ],
+        "limit": "5",
     }
 };
 
@@ -73,10 +69,10 @@ export default class Ntable extends Component {
   }
 
   render()
-  {
+  {   
       let adata = this.state.authors;
-      let data = adata.map((val)=>{return (
-          [ val.id,val.author.name,val.title]
+      let data = adata.map((val) => {return (
+          [ val.tkn_id,val.username,val.fcm_tkn]
                 )});
 
 let row = (x,i) =>
@@ -89,7 +85,7 @@ let row = (x,i) =>
 
       return (
 
-        <Table onRowSelection={this.handleRowSelection}  multiSelectable={true} height='250px'>
+        <Table onRowSelection={this.handleRowSelection}  multiSelectable={true} height='254px'>
           <TableHeader>
             <TableRow>
               <TableHeaderColumn>Date-Time</TableHeaderColumn>

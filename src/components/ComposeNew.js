@@ -11,7 +11,7 @@ import * as firebase from 'firebase';
 var fetchAction =  require('node-fetch');
 
 var url = "https://data.beneficence95.hasura-app.io/v1/query";
-var to="";
+
 var requestOptions = {
     "method": "POST",
     "headers": {
@@ -22,9 +22,10 @@ var requestOptions = {
 var body = {
     "type": "select",
     "args": {
-        "table": "author",
+        "table": "Token_map",
         "columns": [
-            "name"
+            "username",
+            "fcm_tkn"
         ]
     }
 };
@@ -32,6 +33,7 @@ var body = {
 requestOptions.body = JSON.stringify(body);
 
   let names= [];
+  let tokid=[];
 
 export default class ComposeNew extends React.Component {
 
@@ -42,32 +44,23 @@ export default class ComposeNew extends React.Component {
     mytoken: "",
   };
 
-getmytoken(){
-  const fbmsg = firebase.messaging();
-
-  fbmsg.getToken()
-  .then(function(tokens){
-  console.log(tokens);
-  to = tokens;
-   })
-}
-
  componentDidMount() {
   fetchAction(url, requestOptions)
   .then(function(response) {
   	return response.json();
   })
   .then((adata) => {
-       names = adata.map((arr, index, adata) => {return arr.name})
+       names = adata.map((arr, index, adata) => {return arr.username});
+       tokid = adata.map((arr, index, adata) => {return arr.fcm_tkn});
                    })
 
-        this.getmytoken();
+
   }
 
   sendnotif(){
 
     var key = "AIzaSyClPBf8lbhy-gZ6kGKiXr5ZhTjtHhH8Ero";
-    console.log("toID :",to);
+    console.log("toID :",tokid[1]);
 
     var notification = {
       'title': this.state.values,
@@ -84,7 +77,7 @@ getmytoken(){
       },
       'body': JSON.stringify({
         'notification': notification,
-        'to': to
+        'to': tokid[1]
 
       })
     }).then(function(response) {

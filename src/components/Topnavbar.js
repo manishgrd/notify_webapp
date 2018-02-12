@@ -14,13 +14,17 @@ const style = {
 
 
 var fetchAction =  require('node-fetch');
-
+var wmsg="";
 var url = "https://auth.beneficence95.hasura-app.io/v1/user/logout";
-
+var usr = "https://auth.beneficence95.hasura-app.io/v1/user/info";
 var authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
 var headers = { "Authorization" : "Bearer " + authToken }
 var requestOptions = {
     "method": "POST",
+    "headers": headers,
+};
+var requestOptusr = {
+    "method": "GET",
     "headers": headers,
 };
 
@@ -30,9 +34,22 @@ export default class Topnavbar extends React.Component {
     super(props);
     this.state = {
       value: 3,
+      usr_inf: "",
     };
   }
+componentDidMount() {
+  fetchAction(usr, requestOptusr)
+  .then((response) => {
+    return response.json();
+  })
+  .then((result) => { this.setState({usr_inf: result.username});
+   })
+  .catch((error) => {
+  console.log('User info retrieval:' + error);
+   });
 
+
+}
   handleChange = (event, index, value) => this.setState({value});
 
   logout=()=>{
@@ -58,6 +75,7 @@ export default class Topnavbar extends React.Component {
   }
 
   render() {
+    wmsg="Welcome !!  "+this.state.usr_inf;
     return (
       <div>
       <Toolbar>
@@ -65,8 +83,8 @@ export default class Topnavbar extends React.Component {
         <Link to='/home'><RaisedButton label="HOME" primary={true} /></Link>
         </ToolbarGroup>
         <ToolbarGroup>
-          <ToolbarTitle text="Welcome Full Name !!" />
-          <Avatar src="images/uxceo-128.jpg" />
+          <ToolbarTitle text={wmsg} />
+          <Avatar src="https://filestore.beneficence95.hasura-app.io/v1/file/32936cf3-ce03-4571-b4f9-e37d53e30e5a" />
           </ToolbarGroup>
           <ToolbarGroup lastChild={false}>
           <RaisedButton onClick={()=>this.logout()} label="LOGOUT" secondary={true} />
@@ -81,6 +99,8 @@ export default class Topnavbar extends React.Component {
 }
 
 /*
+src='
+
 import IconMenu from 'material-ui/IconMenu';
 import IconButton from 'material-ui/IconButton';
 import NavigationExpandMoreIcon from 'material-ui/svg-icons/navigation/expand-more';

@@ -9,16 +9,15 @@ import Paper from 'material-ui/Paper';
 import { Link } from 'react-router-dom'
 
 const style = {
-  height: 480,
+  height: 830,
   width: 500,
   margin: 10,
   display: 'inline-block',
 };
 
 var fetchAction =  require('node-fetch');
-var authToken = null;
 
-var url = "https://auth.beneficence95.hasura-app.io/v1/login";
+var url = "https://api.dankness95.hasura-app.io/register";
 
 var requestOptions = {
     "method": "POST",
@@ -27,10 +26,15 @@ var requestOptions = {
     }
 };
 
-    export default class Login extends Component {
+    export default class Signup extends Component {
       state = {
+        fname:'',
+        lname:'',
         uname:'',
         pwd:'',
+        email:'',
+        phone:'',
+        device:'',
       }
 
    change = (e) => {
@@ -42,18 +46,25 @@ var requestOptions = {
    onSubmit=(e) =>{
      e.preventDefault();
      this.setState({
+       fname:'',
+       lname:'',
        uname:'',
        pwd:'',
+       email:'',
+       phone:'',
+       device:'',
      });
-     this.login();
+     this.signup();
    }
-login =()=> {
+  signup = () => {
   var body = {
-      "provider": "username",
-      "data": {
-          "username": this.state.uname,
-          "password": this.state.pwd,
-      }
+  "F_Name": this.state.fname,
+  "L_Name": this.state.lname,
+  "User_Name": this.state.uname,
+  "Pass": this.state.pwd,
+  "Email_id": this.state.email,
+  "Phone_No": this.state.phone,
+  "Device_Id": this.state.device,
   };
 
   requestOptions.body = JSON.stringify(body);
@@ -63,15 +74,7 @@ login =()=> {
     return response.json();
   })
   .then(function(result) {
-
-    authToken = result.auth_token
-    if(authToken!=null)
-        { window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
-          window.location.href = '/home';         }
-    else
-    {   window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
-        alert("Invalid credentials--Try Again !!"); }
-
+console.log('SUCCESSFUL :' + result);
   })
   .catch(function(error) {
     console.log('Request Failed:' + error);
@@ -89,8 +92,21 @@ login =()=> {
           <Card>
           <LinearProgress mode="indeterminate" />
           <CardTitle
-             title="Welcome to Notify app " subtitle="Enter your credentials " />
+             title="To Signup (Register) " subtitle="Enter your Information " />
           <form>
+          <TextField
+              name="fname"
+              hintText="First Name"
+              floatingLabelText="Your First Name"
+              value={this.state.fname}
+              onChange={e =>this.change(e)}
+          /> <br/>
+          <TextField name="lname"
+                 hintText="Last Name"
+                 floatingLabelText="Your Last Name"
+                 value={this.state.lname}
+                 onChange={e =>this.change(e)}
+          /><br/>
           <TextField
               name="uname"
               hintText="Username"
@@ -104,10 +120,30 @@ login =()=> {
                  value={this.state.pwd}
                  onChange={e =>this.change(e)}
           /><br/>
+          <TextField
+              name="email"
+              hintText="Email ID"
+              floatingLabelText="Your Email ID"
+              value={this.state.email}
+              onChange={e =>this.change(e)}
+          /> <br/>
+          <TextField name="phone"
+                 hintText="Phone no."
+                 floatingLabelText="Your Phone no."
+                 value={this.state.phone}
+                 onChange={e =>this.change(e)}
+          /><br/>
+          <TextField
+              name="device"
+              hintText="Device ID"
+              floatingLabelText="Name Your Device"
+              value={this.state.device}
+              onChange={e =>this.change(e)}
+          /> <br/>
           <br/>
-          <RaisedButton onClick={(e)=>this.onSubmit(e)} label="LOGIN" secondary="true" />
+          <RaisedButton onClick={(e)=>this.onSubmit(e)} label="SIGNUP" secondary="true" />
           <FlatButton label=" " />
-          <Link to='/signup'><RaisedButton label="REGISTER" primary="true" /></Link>
+          <Link to='/'><RaisedButton label="Login" primary="true" /></Link>
           </form>
           <br/>
             <LinearProgress mode="indeterminate" />
@@ -118,9 +154,3 @@ login =()=> {
       }
 
   }
-
-  /*
-  <Paper style={logostyle} zDepth={5} rounded={false} >
-  <img src="images/splash.png" alt="logo"/>
-  </Paper>
-  */
