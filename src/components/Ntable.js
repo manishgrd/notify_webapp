@@ -7,6 +7,15 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import Paper from 'material-ui/Paper';
+import Delete from 'material-ui/svg-icons/action/delete';
+import View from 'material-ui/svg-icons/action/view-list';
+import Notify from 'material-ui/svg-icons/social/notifications';
+
+const view = <View />;
+const notify = <Notify />;
+const clear = <Delete />;
 
 var fetchAction =  require('node-fetch');
 
@@ -22,13 +31,18 @@ var requestOptions = {
 var body = {
     "type": "select",
     "args": {
-        "table": "Token_map",
+        "table": "article",
         "columns": [
-            "tkn_id",
-            "username",
-            "fcm_tkn"
-        ],
-        "limit": "5",
+            "id",
+            {
+                "name": "author",
+                "columns": [
+                    "name"
+                ]
+            },
+            "title"
+          ],
+          "limit": "5",
     }
 };
 
@@ -44,9 +58,12 @@ export default class Ntable extends Component {
       this.state = {
           authors: [],
           selected: [2],
+          selectedIndex: 0,
       };
 
   }
+
+select = (index) => this.setState({selectedIndex: index});
 
   isSelected = (index) => {
     return this.state.selected.indexOf(index) !== -1;
@@ -69,10 +86,10 @@ export default class Ntable extends Component {
   }
 
   render()
-  {   
+  {
       let adata = this.state.authors;
       let data = adata.map((val) => {return (
-          [ val.tkn_id,val.username,val.fcm_tkn]
+          [ val.id,val.author.name,val.title]
                 )});
 
 let row = (x,i) =>
@@ -84,7 +101,7 @@ let row = (x,i) =>
                </TableRow>;
 
       return (
-
+        <div>
         <Table onRowSelection={this.handleRowSelection}  multiSelectable={true} height='254px'>
           <TableHeader>
             <TableRow>
@@ -97,6 +114,26 @@ let row = (x,i) =>
             {data.map((x,i)=>row(x,i))}
           </TableBody>
         </Table>
+        <Paper zDepth={1}>
+          <BottomNavigation selectedIndex={this.state.selectedIndex}>
+            <BottomNavigationItem
+              label="View"
+              icon={view}
+              onClick={() => this.select(0)}
+            />
+            <BottomNavigationItem
+              label="Clear"
+              icon={clear}
+              onClick={() => this.select(1)}
+            />
+            <BottomNavigationItem
+              label="Notify others"
+              icon={notify}
+              onClick={() => this.select(2)}
+            />
+          </BottomNavigation>
+        </Paper>
+        </div>
         )
 }
 }

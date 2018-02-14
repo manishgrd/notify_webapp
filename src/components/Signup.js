@@ -26,7 +26,7 @@ var requestOptions = {
     }
 };
 
-    export default class Signup extends Component {
+  export default class Signup extends Component {
       state = {
         fname:'',
         lname:'',
@@ -56,6 +56,8 @@ var requestOptions = {
      });
      this.signup();
    }
+
+
   signup = () => {
   var body = {
   "F_Name": this.state.fname,
@@ -66,18 +68,19 @@ var requestOptions = {
   "Phone_No": this.state.phone,
   "Device_Id": this.state.device,
   };
-
   requestOptions.body = JSON.stringify(body);
-
+console.log(requestOptions);
   fetchAction(url, requestOptions)
   .then(function(response) {
-    return response.json();
-  })
-  .then(function(result) {
-console.log('SUCCESSFUL :' + result);
+    console.log(response);
+    if(response.status===200)
+    {   window.location.href = '/';
+      alert("AWESOME !! now login to continue");    }
+    else
+    alert("Oops !! Something went wrong ! Try again !");
   })
   .catch(function(error) {
-    console.log('Request Failed:' + error);
+    alert('Request Failed:' + error);
   });
 
 }
@@ -86,7 +89,6 @@ console.log('SUCCESSFUL :' + result);
       render() {
         return(
           <div>
-
           <Paper style={style} zDepth={3} >
           <img src="images/logo.png" alt="logo" height="190" width="500"/>
           <Card>
@@ -110,13 +112,13 @@ console.log('SUCCESSFUL :' + result);
           <TextField
               name="uname"
               hintText="Username"
-              floatingLabelText="Your Username"
+              floatingLabelText="Create A Username"
               value={this.state.uname}
               onChange={e =>this.change(e)}
           /> <br/>
           <TextField name="pwd" type="password"
                  hintText="Password"
-                 floatingLabelText="Your Password"
+                 floatingLabelText="A Password to Login"
                  value={this.state.pwd}
                  onChange={e =>this.change(e)}
           /><br/>

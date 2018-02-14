@@ -4,7 +4,6 @@ import Topnavbar from './Topnavbar';
 import NotifDisplay from './NotifDisplay';
 import TabsEx from './TabsEx';
 import ActionsBar from './ActionsBar';
-import Bottombar from './Bottombar';
 import Ntable from './Ntable';
 
 
@@ -24,7 +23,6 @@ const Ngrouped = () => (
     <ActionsBar /><br/>
     <TabsEx /><br/>
     <Ntable /><br/>
-    <Bottombar /><br/>
     </Paper>
   </div>
 );

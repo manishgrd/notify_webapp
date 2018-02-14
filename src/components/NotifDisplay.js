@@ -30,14 +30,15 @@ export default class NotifDisplay extends React.Component {
   notif:"",
   peer:"",
   snack: false,
+  ntime:"",
   };
   }
-
+/*
 sendTokentoServer()
   {
-    firebase.messaging().getToken()
+    firebase.messaging().getToken()   //get user token
     .then((tokens) => {
-    fetchAction(url, requestOptions)
+    fetchAction(url, requestOptions)    //get user info
     .then((response) => {
       return response.json();
     })
@@ -66,7 +67,7 @@ sendTokentoServer()
 };;
       requestOptions.body = JSON.stringify(body);
 
-      fetchAction(url, requestOptions)
+      fetchAction(url, requestOptions)                      //post user token to server
       .then(function(response) {
       	return response.json();
       })
@@ -89,43 +90,53 @@ sendTokentoServer()
     });
   }
 
-
+*/
 
   componentDidMount()
-  {
-    firebase.messaging().requestPermission()
+  {  const msg = firebase.messaging();
+  msg.requestPermission()
      .then(()=> {
        console.log("PERMITTED");
        this.setState({ndata: "Push Notifications ENABLED !!"});
-       this.sendTokentoServer();
+  //     this.sendTokentoServer();
        })
        .catch((err)=> {
          this.setState({ndata: err.message});
       });
 
-    firebase.messaging().onMessage(payload => {
+  msg.onMessage(payload => {
+      this.getNotifTime();
       console.log('onMessage:',payload);
       this.setState({ notif: payload.notification.body, peer: payload.notification.title, snack: true });
     });
 
   }
 
-openSnackbar() {
+  addZero = (i) => {
+      if (i < 10) {  i = "0" + i; }
+      return i;  }
 
-}
-
+getNotifTime = () => {
+      var d = new Date();
+      var h = this.addZero(d.getUTCHours());
+      var m = this.addZero(d.getUTCMinutes());
+      var s = this.addZero(d.getUTCSeconds());
+      var x =  "@ UTC " +h + ":" + m + ":" + s;
+      this.setState({ntime: x});
+  }
 // Todo : include date-time stamp from server for each received message or use js to indicate local time
 //Todo : include file id/link in request sent to server to display each users profile image
 
 render() {
+
   return(
   <div>
   <Paper style={style} zDepth={3} >
   <Card>
     <CardHeader
       title={this.state.peer}
-      subtitle="Date --time"
-      avatar="images/jsa-128.jpg"
+      subtitle={this.state.ntime}
+      avatar="/images/notify.png"
     />
     <CardTitle title={this.state.notif} subtitle={this.state.ndata}/>
   </Card>

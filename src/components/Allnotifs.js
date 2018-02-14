@@ -4,6 +4,7 @@ import Exptable from './Exptable';
 import Bottombar from './Bottombar';
 
 const Allnotifs = () => (
+
       <div>
       <Topnavbar/>
       <Exptable/>

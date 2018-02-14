@@ -22,10 +22,9 @@ var requestOptions = {
 var body = {
     "type": "select",
     "args": {
-        "table": "Token_map",
+        "table": "author",
         "columns": [
-            "username",
-            "fcm_tkn"
+            "name",
         ]
     }
 };
@@ -33,7 +32,7 @@ var body = {
 requestOptions.body = JSON.stringify(body);
 
   let names= [];
-  let tokid=[];
+  var tokid="";
 
 export default class ComposeNew extends React.Component {
 
@@ -50,23 +49,28 @@ export default class ComposeNew extends React.Component {
   	return response.json();
   })
   .then((adata) => {
-       names = adata.map((arr, index, adata) => {return arr.username});
-       tokid = adata.map((arr, index, adata) => {return arr.fcm_tkn});
+       names = adata.map((arr, index, adata) => {return arr.name});
                    })
-
-
+  const msg = firebase.messaging();
+   msg.getToken()   //get user token
+   .then((tokens) => {
+     this.setState({mytoken: tokens});
+     tokid = tokens;
+   })
+   .catch((error) => {
+     console.log('Firebase Messaging:' + error);
+   });
   }
 
   sendnotif(){
 
     var key = "AIzaSyClPBf8lbhy-gZ6kGKiXr5ZhTjtHhH8Ero";
-    console.log("toID :",tokid[1]);
-
+    console.log('tokid:' + tokid);
     var notification = {
       'title': this.state.values,
       'body': this.state.message,
       'icon': '/images/notify.png',
-      'click_action': 'http://localhost:3002/home'
+      'click_action': 'https://ui.beneficence95.hasura-app.io/home'
     };
 
     fetch('https://fcm.googleapis.com/fcm/send', {
@@ -77,7 +81,7 @@ export default class ComposeNew extends React.Component {
       },
       'body': JSON.stringify({
         'notification': notification,
-        'to': tokid[1]
+        'to': tokid,
 
       })
     }).then(function(response) {
@@ -130,14 +134,12 @@ export default class ComposeNew extends React.Component {
   render() {
     const actions = [
       <RaisedButton
-        label="Reset"
-      />,
-      <RaisedButton
         label="Push"
         secondary={true}
         onClick={(e)=>this.onSubmit(e)}
       />,
-      <FlatButton
+      <FlatButton label=" "/>,
+      <RaisedButton
         label="Close"
         primary={true}
         keyboardFocused={true}
@@ -164,6 +166,7 @@ export default class ComposeNew extends React.Component {
         multiple={false}
         hintText="Select users"
         value={values}
+        maxHeight={300}
         onChange={this.handleChange} >
         {this.menuItems(values)}
         </SelectField>

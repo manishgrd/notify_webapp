@@ -37,6 +37,7 @@ export default class Topnavbar extends React.Component {
       usr_inf: "",
     };
   }
+
 componentDidMount() {
   fetchAction(usr, requestOptusr)
   .then((response) => {
@@ -61,6 +62,7 @@ componentDidMount() {
     .then(function(result) {
       if(result.message==="logged out")
       { authToken=null;
+        window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
         window.location.href = '/';
         alert ("Logged out successfully !!");
       }
@@ -74,7 +76,9 @@ componentDidMount() {
     else {}
   }
 
+
   render() {
+
     wmsg="Welcome !!  "+this.state.usr_inf;
     return (
       <div>
