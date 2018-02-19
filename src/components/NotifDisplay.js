@@ -136,7 +136,7 @@ render() {
     <CardHeader
       title={this.state.peer}
       subtitle={this.state.ntime}
-      avatar="/images/notify.png"
+      avatar="/images/defaultUser.png"
     />
     <CardTitle title={this.state.notif} subtitle={this.state.ndata}/>
   </Card>

@@ -64,7 +64,7 @@ export default class ComposeNew extends React.Component {
 
   sendnotif(){
 
-    var key = "AIzaSyClPBf8lbhy-gZ6kGKiXr5ZhTjtHhH8Ero";
+    var key = "AIzaSyA1ub-EQV6yv_klcPQmzjGSYMYG-SGAsYY";
     console.log('tokid:' + tokid);
     var notification = {
       'title': this.state.values,

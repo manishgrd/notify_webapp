@@ -23,9 +23,9 @@ var requestOptions = {
 var body = {
     "type": "select",
     "args": {
-        "table": "profile",
+        "table": "author",
         "columns": [
-            "Full_name"
+            "name"
         ]
     }
 };
@@ -50,7 +50,7 @@ export default class Sidebar extends React.Component {
    	return response.json();
    })
    .then((adata) => {
-        names = adata.map((arr, index, adata) => {return arr.Full_name});
+        names = adata.map((arr, index, adata) => {return arr.name});
                     })
    }
 
@@ -60,7 +60,7 @@ export default class Sidebar extends React.Component {
          key={name}
          onClick={this.handleClose}
          primaryText={name}
-         leftAvatar={<Avatar src="images/uxceo-128.jpg" />}
+         leftAvatar={<Avatar src="images/defaultUser.png" />}
          rightIcon={<CommunicationChatBubble />}
        />
 

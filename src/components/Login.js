@@ -65,13 +65,12 @@ login =()=> {
   .then(function(result) {
 
     authToken = result.auth_token
-    if(authToken!=null)
-        { window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
-          window.location.href = '/home';         }
-    else
-    {   window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
-        alert("Invalid credentials--Try Again !!"); }
+    window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
 
+    if(authToken!=null)
+          window.location.href = '/home';
+    else
+        alert("Invalid credentials--Try Again !!"); 
   })
   .catch(function(error) {
     console.log('Request Failed:' + error);
@@ -105,9 +104,9 @@ login =()=> {
                  onChange={e =>this.change(e)}
           /><br/>
           <br/>
-          <RaisedButton onClick={(e)=>this.onSubmit(e)} label="LOGIN" secondary="true" />
+          <RaisedButton onClick={(e)=>this.onSubmit(e)} label="LOGIN" secondary={true} />
           <FlatButton label=" " />
-          <Link to='/signup'><RaisedButton label="REGISTER" primary="true" /></Link>
+          <Link to='/signup'><RaisedButton label="REGISTER" primary={true} /></Link>
           </form>
           <br/>
             <LinearProgress mode="indeterminate" />
@@ -118,9 +117,3 @@ login =()=> {
       }
 
   }
-
-  /*
-  <Paper style={logostyle} zDepth={5} rounded={false} >
-  <img src="images/splash.png" alt="logo"/>
-  </Paper>
-  */
