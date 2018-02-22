@@ -8,19 +8,6 @@ const style = {
  textAlign: 'left',
 };
 
-var fetchAction =  require('node-fetch');
-var url = "https://auth.beneficence95.hasura-app.io/v1/user/info";
-var authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
-var requestOptions = {
-    "method": "GET",
-    "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + authToken,
-    }
-};
-
-var body = {};
-
 export default class NotifDisplay extends React.Component {
   constructor(props)
   {
@@ -33,72 +20,32 @@ export default class NotifDisplay extends React.Component {
   ntime:"",
   };
   }
-/*
-sendTokentoServer()
-  {
-    firebase.messaging().getToken()   //get user token
-    .then((tokens) => {
-    fetchAction(url, requestOptions)    //get user info
-    .then((response) => {
-      return response.json();
-    })
-    .then((result) => {
-      url = "https://data.beneficence95.hasura-app.io/v1/query";
-      requestOptions = {
-          "method": "POST",
-          "headers": {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + authToken,
-          }
-      };
-   body = {
-    "type": "update",
-    "args": {
-        "table": "Token_map",
-        "where": { "$and": [
-              {"username": {  "$eq": result.username }  },
-              {"Hasura_id": {  "$eq": result.hasura_id } }
-            ]   },
-        "$set": {
-            "fcm_tkn": tokens,
-            "device": window.navigator.appVersion,
-        }
-    }
-};;
-      requestOptions.body = JSON.stringify(body);
 
-      fetchAction(url, requestOptions)                      //post user token to server
-      .then(function(response) {
-      	return response.json();
-      })
-      .then(function(result) {
-      	console.log(result);
-      })
-      .catch(function(error) {
-      	console.log('Token Updation:' + error);
-      });
-
-    })
-    .catch((error) => {
-      console.log('User info retrieval:' + error);
-    });
-
-
-    })
-    .catch((error) => {
-      console.log('Firebase Messaging:' + error);
-    });
-  }
-
-*/
-
-  componentDidMount()
+  componentWillMount()
   {  const msg = firebase.messaging();
-  msg.requestPermission()
+
+    msg.onTokenRefresh(()=> {
+      window.localStorage.setItem('sentToServer',false);
+      console.log('Token refreshed.');
+      msg.getToken()
+      .then((refreshedToken) => {
+        this.props.sendfcmtoken(refreshedToken);   //send token to server
+      })
+      .catch((err) => {
+        console.log('Unable to retrieve refreshed token ', err);
+      });
+    });
+
+     msg.requestPermission()
      .then(()=> {
-       console.log("PERMITTED");
        this.setState({ndata: "Push Notifications ENABLED !!"});
-  //     this.sendTokentoServer();
+      msg.getToken()   //get user device token
+       .then((token) => {
+       this.props.sendfcmtoken(token);   //send token to server
+       })
+     .catch((error) => {
+      console.log('Token Updation:' + error);
+     });
        })
        .catch((err)=> {
          this.setState({ndata: err.message});
@@ -106,11 +53,9 @@ sendTokentoServer()
 
   msg.onMessage(payload => {
       this.getNotifTime();
-      console.log('onMessage:',payload);
       this.setState({ notif: payload.notification.body, peer: payload.notification.title, snack: true });
-    });
+    });  }
 
-  }
 
   addZero = (i) => {
       if (i < 10) {  i = "0" + i; }
@@ -121,14 +66,12 @@ getNotifTime = () => {
       var h = this.addZero(d.getUTCHours());
       var m = this.addZero(d.getUTCMinutes());
       var s = this.addZero(d.getUTCSeconds());
-      var x =  "@ UTC " +h + ":" + m + ":" + s;
+      var x =  "@ GMT " +h + ":" + m + ":" + s;
       this.setState({ntime: x});
   }
-// Todo : include date-time stamp from server for each received message or use js to indicate local time
 //Todo : include file id/link in request sent to server to display each users profile image
 
 render() {
-
   return(
   <div>
   <Paper style={style} zDepth={3} >

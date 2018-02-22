@@ -12,43 +12,33 @@ import Paper from 'material-ui/Paper';
 import Delete from 'material-ui/svg-icons/action/delete';
 import View from 'material-ui/svg-icons/action/view-list';
 import Notify from 'material-ui/svg-icons/social/notifications';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import Received from 'material-ui/svg-icons/navigation/arrow-back';
+import Sent from 'material-ui/svg-icons/navigation/arrow-forward';
 
 const view = <View />;
 const notify = <Notify />;
 const clear = <Delete />;
 
-var fetchAction =  require('node-fetch');
-
-var url = "https://data.beneficence95.hasura-app.io/v1/query";
-
-var requestOptions = {
+let url = "https://data.dankness95.hasura-app.io/v1/query";
+let authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
+let requestOptions = {
     "method": "POST",
     "headers": {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + authToken,
     }
 };
-//Todo: Limit to Include recent 6 results sent to the user logged in by matching "where"
-var body = {
-    "type": "select",
-    "args": {
-        "table": "article",
-        "columns": [
-            "id",
-            {
-                "name": "author",
-                "columns": [
-                    "name"
-                ]
-            },
-            "title"
-          ],
-          "limit": "5",
+let urlX = "https://auth.dankness95.hasura-app.io/v1/user/info";
+let requestOptionsX = {
+    "method": "GET",
+    "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + authToken,
     }
 };
 
-requestOptions.body = JSON.stringify(body);
-
-
+let body = {};let selectMsg = [["aa","bb","cc"],["aa","bb","cc"],["aa","bb","cc"]];
 
 export default class Ntable extends Component {
 
@@ -56,7 +46,8 @@ export default class Ntable extends Component {
   {
       super(props);
       this.state = {
-          authors: [],
+          MessagesSent: [],
+          MessagesReceived:[],
           selected: [2],
           selectedIndex: 0,
       };
@@ -76,21 +67,104 @@ select = (index) => this.setState({selectedIndex: index});
   };
 
   componentDidMount() {
-  fetchAction(url, requestOptions)
-  .then(response => {
-  	return response.json();
-  })
-  .then((adata) => {
-      this.setState({authors: adata})
-    });
+      fetch(urlX, requestOptionsX)    //get user info
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+      console.log(result);
+      this.getSentMessages(result.username);
+      this.getReceivedMessages(result.username);
+      })
+      .catch((error) => {
+        console.log('User info retrieval:' + error);
+      });
+
   }
+
+getSentMessages=(user)=>{
+  console.log(user);
+  body = {
+  "type": "select",
+  "args": {
+      "table": "Messages",
+      "columns": [
+          "Message",
+          "To",
+          "time"
+      ],
+      "where": {
+          "From": {
+              "$eq": user,
+          }
+      },
+      "limit": this.props.data.limit,
+      "order_by": [
+          {
+              "column": "time",
+              "order": "desc"
+          }
+      ]
+  }
+};
+requestOptions.body = JSON.stringify(body);
+
+fetch(url, requestOptions)
+.then((response) => {
+  return response.json();
+})
+.then((adata) => {
+    this.setState({MessagesSent: adata})
+  });
+}
+
+getReceivedMessages=(user)=>{
+  console.log(user);
+  body = {
+  "type": "select",
+  "args": {
+      "table": "Messages",
+      "columns": [
+          "Message",
+          "From",
+          "time"
+      ],
+      "where": {
+          "To": {
+              "$eq": user,
+          }
+      },
+      "limit": this.props.data.limit,
+      "order_by": [
+          {
+              "column": "time",
+              "order": "desc"
+          }
+      ]
+  }
+};
+requestOptions.body = JSON.stringify(body);
+
+fetch(url, requestOptions)
+.then((response) => {
+  return response.json();
+})
+.then((adata) => {
+    this.setState({MessagesReceived: adata})
+  });
+}
+
+showSent=()=>{
+ selectMsg=this.state.MessagesReceived.map((val) => {return ([ val.time,val.From,val.Message])});
+  console.log("RECEIVED",selectMsg); }
+
+showReceived=()=>{
+   selectMsg=this.state.MessagesSent.map((val) => {return ([ val.time,val.To,val.Message])})
+  console.log("SENT",selectMsg);}
 
   render()
   {
-      let adata = this.state.authors;
-      let data = adata.map((val) => {return (
-          [ val.id,val.author.name,val.title]
-                )});
+
 
 let row = (x,i) =>
                <TableRow key={i} selected={this.isSelected(i)}>
@@ -102,7 +176,20 @@ let row = (x,i) =>
 
       return (
         <div>
-        <Table onRowSelection={this.handleRowSelection}  multiSelectable={true} height='254px'>
+        <Tabs>
+          <Tab
+            icon={<Received />}
+            label="Received"
+            onActive={this.showReceived()}
+          />
+          <Tab
+            icon={<Sent />}
+            label="Sent"
+            onActive={this.showSent()}
+          />
+
+        </Tabs>
+        <Table onRowSelection={this.handleRowSelection}  multiSelectable={true} height={this.props.data.height}>
           <TableHeader>
             <TableRow>
               <TableHeaderColumn>Date-Time</TableHeaderColumn>
@@ -111,7 +198,7 @@ let row = (x,i) =>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((x,i)=>row(x,i))}
+            {selectMsg.map((x,i)=>row(x,i))}
           </TableBody>
         </Table>
         <Paper zDepth={1}>

@@ -5,92 +5,57 @@ import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import * as firebase from 'firebase';
-
-
-var fetchAction =  require('node-fetch');
-
-var url = "https://data.beneficence95.hasura-app.io/v1/query";
-
-var requestOptions = {
-    "method": "POST",
-    "headers": {
-        "Content-Type": "application/json"
-    }
-};
-
-var body = {
-    "type": "select",
-    "args": {
-        "table": "author",
-        "columns": [
-            "name",
-        ]
-    }
-};
-
-requestOptions.body = JSON.stringify(body);
-
-  let names= [];
-  var tokid="";
 
 export default class ComposeNew extends React.Component {
 
-    state = {
+  constructor(props){
+    super(props);
+    this.state = {
     open: false,
     values: [],
     message: "",
-    mytoken: "",
+    Data : ['All Offline'],
   };
+}
 
- componentDidMount() {
-  fetchAction(url, requestOptions)
-  .then(function(response) {
-  	return response.json();
-  })
-  .then((adata) => {
-       names = adata.map((arr, index, adata) => {return arr.name});
-                   })
-  const msg = firebase.messaging();
-   msg.getToken()   //get user token
-   .then((tokens) => {
-     this.setState({mytoken: tokens});
-     tokid = tokens;
-   })
-   .catch((error) => {
-     console.log('Firebase Messaging:' + error);
-   });
-  }
+setUsers() {
+   let authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
+  const url = "https://data.dankness95.hasura-app.io/v1/query";
+  let requestOptions = {
+      "method": "POST",
+      "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + authToken,
+      }
+  };
+  const body = {
+      "type": "select",
+      "args": {
+          "table": "FCM_tokens",
+          "columns": [
+              "username",]
+            }};
+  requestOptions.body = JSON.stringify(body);
 
-  sendnotif(){
+ fetch(url, requestOptions)
+ .then((response) => {
+   return response.json();
+ })
+ .then((adata) => {
+  this.setState({Data : adata.map((data)=>{return data.username })});
+  }).catch((error) => {
+    console.log("FAILED",error);
+                })
+       }
 
-    var key = "AIzaSyA1ub-EQV6yv_klcPQmzjGSYMYG-SGAsYY";
-    console.log('tokid:' + tokid);
-    var notification = {
-      'title': this.state.values,
-      'body': this.state.message,
-      'icon': '/images/notify.png',
-      'click_action': 'https://ui.beneficence95.hasura-app.io/home'
-    };
+componentWillMount(){
+this.setUsers();
+console.log(this.props);
+}
 
-    fetch('https://fcm.googleapis.com/fcm/send', {
-      'method': 'POST',
-      'headers': {
-        'Authorization': 'key=' + key,
-        'Content-Type': 'application/json'
-      },
-      'body': JSON.stringify({
-        'notification': notification,
-        'to': tokid,
+componentWillUpdate(){
 
-      })
-    }).then(function(response) {
-      console.log("SUCCESSFUL",response);
-    }).catch(function(error) {
-      console.error("FAILED",error);
-    })
-
-    }
+}
 
   change = (e) => {
     this.setState({
@@ -100,13 +65,12 @@ export default class ComposeNew extends React.Component {
 
   onSubmit=(e) =>{
     e.preventDefault();
-    console.log(this.state);
-    this.sendnotif();
+    this.props.sendnotif(this.state.values,this.state.message);
     this.setState({
       message:"",
       open:false,
     });
-    console.log(this.state.message);
+  console.log(this.state.values,"said: ",this.state.message);
 }
 
   handleOpen = () => {
@@ -120,7 +84,7 @@ export default class ComposeNew extends React.Component {
   handleChange = (event, index, values) => this.setState({values});
 
   menuItems(values) {
-    return names.map((name) => (
+    return this.state.Data.map((name) => (
       <MenuItem
         key={name}
         insetChildren={true}
@@ -152,7 +116,7 @@ export default class ComposeNew extends React.Component {
     return (
       <div>
 
-        <RaisedButton label="COMPOSE NEW" secondary={true} onClick={this.handleOpen} />
+        <RaisedButton label="COMPOSE NEW" backgroundColor="Tomato" onClick={this.handleOpen} />
 
         <Dialog
           title="Compose a new notification"

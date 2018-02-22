@@ -18,7 +18,7 @@ const style = {
 var fetchAction =  require('node-fetch');
 var authToken = null;
 
-var url = "https://auth.beneficence95.hasura-app.io/v1/login";
+var url = "https://auth.dankness95.hasura-app.io/v1/login";
 
 var requestOptions = {
     "method": "POST",
@@ -70,7 +70,7 @@ login =()=> {
     if(authToken!=null)
           window.location.href = '/home';
     else
-        alert("Invalid credentials--Try Again !!"); 
+        alert("Invalid credentials--Try Again !!");
   })
   .catch(function(error) {
     console.log('Request Failed:' + error);

@@ -1,15 +1,26 @@
-import React from 'react'
+import React, { Component }  from 'react';
 import Topnavbar from './Topnavbar';
-import Exptable from './Exptable';
-import Bottombar from './Bottombar';
+import Ntable from './Ntable';
 
-const Allnotifs = () => (
+export default class Main extends Component {
 
-      <div>
-      <Topnavbar/>
-      <Exptable/>
-      <Bottombar/>
-      </div>
-    );
+  constructor(props){
+    super(props);
+    this.state = {
+      table:{
+      limit:  "5",
+      height:'254px',
+      },
+    };
+  }
 
-export default Allnotifs
+
+  render(){
+  return(
+    <div>
+    <Topnavbar/>
+    <Ntable data={this.state.table}/>
+    </div>
+);
+}
+}

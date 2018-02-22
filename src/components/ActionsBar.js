@@ -5,18 +5,31 @@ import Sidebar from './Sidebar';
 import ComposeNew from './ComposeNew';
 import { Link } from 'react-router-dom'
 
-
+let pickUser='default';
 
 export default class ActionsBar extends React.Component {
 
-  constructor(props) {
+  constructor(props){
     super(props);
     this.state = {
-      value: 3,
+
     };
   }
 
-  handleChange = (event, index, value) => this.setState({value});
+  componentWillMount(){
+  this.setState({Data : this.props.transfer});
+  }
+
+ handlepass=(title,message)=> {
+   console.log("Title:"+title+"  "+"Message:"+message);
+   this.props.passnotif(title,message);
+ }
+
+msgUser = (user) => {
+  console.log(user);
+  pickUser = user;
+  console.log(pickUser);
+}
 
   render() {
     return (
@@ -24,10 +37,13 @@ export default class ActionsBar extends React.Component {
 
       <Toolbar>
         <ToolbarGroup firstChild={false}>
-        <ComposeNew />
+        <ComposeNew sendnotif={this.handlepass} user={pickUser}/>
         </ToolbarGroup>
         <ToolbarGroup>
-        <Sidebar />
+        <Sidebar sendnotif={this.handlepass} selectUser={this.msgUser}/>
+        </ToolbarGroup>
+        <ToolbarGroup>
+          <Link to='/profile'><RaisedButton label="Profile" backgroundColor="LimeGreen"/></Link>
         </ToolbarGroup>
         <ToolbarGroup lastChild={false}>
           <Link to='/viewall'><RaisedButton label="ALL Notifications" primary={true} /></Link>

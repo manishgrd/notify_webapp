@@ -15,8 +15,8 @@ const style = {
 
 var fetchAction =  require('node-fetch');
 var wmsg="";
-var url = "https://auth.beneficence95.hasura-app.io/v1/user/logout";
-var usr = "https://auth.beneficence95.hasura-app.io/v1/user/info";
+var url = "https://auth.dankness95.hasura-app.io/v1/user/logout";
+var usr = "https://auth.dankness95.hasura-app.io/v1/user/info";
 var authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
 var headers = { "Authorization" : "Bearer " + authToken }
 var requestOptions = {
@@ -73,7 +73,6 @@ componentDidMount() {
     .catch(function(error) {
     	console.log('Request Failed:' + error);
     });}
-    else {}
   }
 
 
@@ -88,7 +87,7 @@ componentDidMount() {
         </ToolbarGroup>
         <ToolbarGroup>
           <ToolbarTitle text={wmsg} />
-          <Avatar src="https://filestore.beneficence95.hasura-app.io/v1/file/32936cf3-ce03-4571-b4f9-e37d53e30e5a" />
+          <Avatar src="images/defaultUser.png" />
           </ToolbarGroup>
           <ToolbarGroup lastChild={false}>
           <RaisedButton onClick={()=>this.logout()} label="LOGOUT" secondary={true} />
