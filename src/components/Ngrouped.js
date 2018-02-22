@@ -54,9 +54,7 @@ export default class Ngrouped extends Component {
     setTokenSent =(sent)=> {window.localStorage.setItem('sentToServer', sent ? true : false);}
 
     sendToken = (currentToken) => {
-         console.log(' FCM token:',currentToken);
       if (this.isTokenSentToServer()) {
-        console.log('Sending token to server...');
         this.sendTokenToServer(currentToken); //Send the current token to your server.
         this.setTokenSent(true);
       } else {
@@ -69,7 +67,6 @@ componentDidMount(){
     return response.json();
   })
   .then((result) => {
-  console.log(result);
    this.setState({username : result.username, hasura_id: result.hasura_id});
   })
   .catch((error) => {
@@ -96,7 +93,7 @@ sendTokenToServer  = (tokens) => {
     }
 };
   requestOptions.body = JSON.stringify(body);
-  fetch(url, requestOptions)                      //post user token to server
+  fetch(url, requestOptions)
   .then((response)=> {
     return response.json();
   })
@@ -126,7 +123,7 @@ insertTokenAtServer = (tokens) => {
     }
 };
   requestOptions.body = JSON.stringify(body);
-  fetch(url, requestOptions)                      //post user token to server
+  fetch(url, requestOptions)                   
   .then((response)=> {
     return response.json();
   })
@@ -161,7 +158,6 @@ fetch(url, requestOptions)                      //get fcm user token from server
   return response.json();
 })
 .then((result)=> {
-  console.log(result[0].fcm_tkn);
   this.sendDirectNotif(this.state.username,user,message,result[0].fcm_tkn); //sending notification to end-user
 })
 .catch((error)=> {

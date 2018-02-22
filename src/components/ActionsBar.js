@@ -21,14 +21,11 @@ export default class ActionsBar extends React.Component {
   }
 
  handlepass=(title,message)=> {
-   console.log("Title:"+title+"  "+"Message:"+message);
    this.props.passnotif(title,message);
  }
 
 msgUser = (user) => {
-  console.log(user);
   pickUser = user;
-  console.log(pickUser);
 }
 
   render() {
@@ -41,9 +38,6 @@ msgUser = (user) => {
         </ToolbarGroup>
         <ToolbarGroup>
         <Sidebar sendnotif={this.handlepass} selectUser={this.msgUser}/>
-        </ToolbarGroup>
-        <ToolbarGroup>
-          <Link to='/profile'><RaisedButton label="Profile" backgroundColor="LimeGreen"/></Link>
         </ToolbarGroup>
         <ToolbarGroup lastChild={false}>
           <Link to='/viewall'><RaisedButton label="ALL Notifications" primary={true} /></Link>

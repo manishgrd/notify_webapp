@@ -76,7 +76,6 @@ export default class Sidebar extends React.Component {
       message:"",
       open:false,
     });
-  console.log(idv,"said: ",this.state.message);
 }
 
    listItems(values) {
@@ -123,6 +122,7 @@ this.setState({opend: true});
         <RaisedButton
           label="View Online"
           onClick={this.handleToggle}
+          backgroundColor="LimeGreen"
         />
         <Drawer width={250}
         openSecondary={true}

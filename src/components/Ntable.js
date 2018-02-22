@@ -14,7 +14,7 @@ import View from 'material-ui/svg-icons/action/view-list';
 import Notify from 'material-ui/svg-icons/social/notifications';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Received from 'material-ui/svg-icons/navigation/arrow-back';
-import Sent from 'material-ui/svg-icons/navigation/arrow-forward';
+
 
 const view = <View />;
 const notify = <Notify />;
@@ -38,7 +38,7 @@ let requestOptionsX = {
     }
 };
 
-let body = {};let selectMsg = [["aa","bb","cc"],["aa","bb","cc"],["aa","bb","cc"]];
+let body = {};let selectMsg = [];
 
 export default class Ntable extends Component {
 
@@ -46,10 +46,10 @@ export default class Ntable extends Component {
   {
       super(props);
       this.state = {
-          MessagesSent: [],
-          MessagesReceived:[],
-          selected: [2],
+          Messages:[],
+          selected: [0],
           selectedIndex: 0,
+          opend:false,
       };
 
   }
@@ -72,9 +72,8 @@ select = (index) => this.setState({selectedIndex: index});
         return response.json();
       })
       .then((result) => {
-      console.log(result);
-      this.getSentMessages(result.username);
-      this.getReceivedMessages(result.username);
+      this.getMessages(result.username);
+
       })
       .catch((error) => {
         console.log('User info retrieval:' + error);
@@ -82,8 +81,7 @@ select = (index) => this.setState({selectedIndex: index});
 
   }
 
-getSentMessages=(user)=>{
-  console.log(user);
+getMessages=(user)=>{
   body = {
   "type": "select",
   "args": {
@@ -91,49 +89,9 @@ getSentMessages=(user)=>{
       "columns": [
           "Message",
           "To",
-          "time"
-      ],
-      "where": {
-          "From": {
-              "$eq": user,
-          }
-      },
-      "limit": this.props.data.limit,
-      "order_by": [
-          {
-              "column": "time",
-              "order": "desc"
-          }
-      ]
-  }
-};
-requestOptions.body = JSON.stringify(body);
-
-fetch(url, requestOptions)
-.then((response) => {
-  return response.json();
-})
-.then((adata) => {
-    this.setState({MessagesSent: adata})
-  });
-}
-
-getReceivedMessages=(user)=>{
-  console.log(user);
-  body = {
-  "type": "select",
-  "args": {
-      "table": "Messages",
-      "columns": [
-          "Message",
           "From",
           "time"
       ],
-      "where": {
-          "To": {
-              "$eq": user,
-          }
-      },
       "limit": this.props.data.limit,
       "order_by": [
           {
@@ -150,26 +108,21 @@ fetch(url, requestOptions)
   return response.json();
 })
 .then((adata) => {
-    this.setState({MessagesReceived: adata})
+    this.setState({Messages: adata})
   });
 }
 
-showSent=()=>{
- selectMsg=this.state.MessagesReceived.map((val) => {return ([ val.time,val.From,val.Message])});
-  console.log("RECEIVED",selectMsg); }
+showMessages=()=>{
+ selectMsg=this.state.Messages.map((val) => {return ([ val.time,val.From,val.To,val.Message])});
+  }
 
-showReceived=()=>{
-   selectMsg=this.state.MessagesSent.map((val) => {return ([ val.time,val.To,val.Message])})
-  console.log("SENT",selectMsg);}
 
   render()
   {
-
-
 let row = (x,i) =>
-               <TableRow key={i} selected={this.isSelected(i)}>
+               <TableRow key={i} selected={this.isSelected(i)} >
                    {x.map((y,k)=>
-                       <TableRowColumn key={k}>
+                       <TableRowColumn key={k} >
                          {y}
                        </TableRowColumn>)}
                </TableRow>;
@@ -179,21 +132,18 @@ let row = (x,i) =>
         <Tabs>
           <Tab
             icon={<Received />}
-            label="Received"
-            onActive={this.showReceived()}
-          />
-          <Tab
-            icon={<Sent />}
-            label="Sent"
-            onActive={this.showSent()}
+            label={<h2>VIEW  RECENT  NOTIFICATION MESSAGES </h2>}
+            onActive={this.showMessages()}
           />
 
         </Tabs>
-        <Table onRowSelection={this.handleRowSelection}  multiSelectable={true} height={this.props.data.height}>
+      
+        <Table onRowSelection={this.handleRowSelection}  multiSelectable={false} height={this.props.data.height}>
           <TableHeader>
             <TableRow>
-              <TableHeaderColumn>Date-Time</TableHeaderColumn>
-              <TableHeaderColumn>USERS / GROUPS</TableHeaderColumn>
+              <TableHeaderColumn>TIME</TableHeaderColumn>
+              <TableHeaderColumn>FROM</TableHeaderColumn>
+              <TableHeaderColumn>TO</TableHeaderColumn>
               <TableHeaderColumn>MESSAGE </TableHeaderColumn>
             </TableRow>
           </TableHeader>
@@ -224,3 +174,8 @@ let row = (x,i) =>
         )
 }
 }
+/*
+import Sent from 'material-ui/svg-icons/navigation/arrow-forward';
+import { Link } from 'react-router-dom'
+
+*/

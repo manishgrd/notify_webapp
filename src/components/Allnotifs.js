@@ -8,8 +8,8 @@ export default class Main extends Component {
     super(props);
     this.state = {
       table:{
-      limit:  "5",
-      height:'254px',
+      limit:  "50",
+      height:'500px',
       },
     };
   }

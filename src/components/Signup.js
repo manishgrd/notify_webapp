@@ -9,17 +9,16 @@ import Paper from 'material-ui/Paper';
 import { Link } from 'react-router-dom'
 
 const style = {
-  height: 830,
+  height: 500,
   width: 500,
   margin: 10,
   display: 'inline-block',
 };
 
-var fetchAction =  require('node-fetch');
 
-var url = "https://api.dankness95.hasura-app.io/register";
+const url = "https://auth.dankness95.hasura-app.io/v1/signup";
 
-var requestOptions = {
+const requestOptions = {
     "method": "POST",
     "headers": {
         "Content-Type": "application/json"
@@ -28,13 +27,8 @@ var requestOptions = {
 
   export default class Signup extends Component {
       state = {
-        fname:'',
-        lname:'',
         uname:'',
         pwd:'',
-        email:'',
-        phone:'',
-        device:'',
       }
 
    change = (e) => {
@@ -46,43 +40,38 @@ var requestOptions = {
    onSubmit=(e) =>{
      e.preventDefault();
      this.setState({
-       fname:'',
-       lname:'',
        uname:'',
        pwd:'',
-       email:'',
-       phone:'',
-       device:'',
      });
      this.signup();
    }
 
 
   signup = () => {
-  var body = {
-  "F_Name": this.state.fname,
-  "L_Name": this.state.lname,
-  "User_Name": this.state.uname,
-  "Pass": this.state.pwd,
-  "Email_id": this.state.email,
-  "Phone_No": this.state.phone,
-  "Device_Id": this.state.device,
-  };
+    let body = {
+    "provider": "username",
+    "data": {   "username": this.state.uname,
+                "password": this.state.pwd,  }   };
+
   requestOptions.body = JSON.stringify(body);
-console.log(requestOptions);
-  fetchAction(url, requestOptions)
+  console.log(requestOptions);
+  fetch(url, requestOptions)
   .then(function(response) {
-    console.log(response);
-    if(response.status===200)
+  	return response.json();
+  })
+  .then(function(result) {
+  	console.log(result);
+  	let authToken = result.auth_token
+  	window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
+    if(result.auth_token!=null)
     {   window.location.href = '/';
       alert("AWESOME !! now login to continue");    }
     else
-    alert("Oops !! Something went wrong ! Try again !");
+    alert("Something went wrong ! Try again !");
   })
   .catch(function(error) {
-    alert('Request Failed:' + error);
+  	alert('Request Failed:' + error);
   });
-
 }
 
 
@@ -94,21 +83,9 @@ console.log(requestOptions);
           <Card>
           <LinearProgress mode="indeterminate" />
           <CardTitle
-             title="To Signup (Register) " subtitle="Enter your Information " />
+             title="To Signup (Register) " subtitle="Enter your Info & click SIGNUP" />
           <form>
-          <TextField
-              name="fname"
-              hintText="First Name"
-              floatingLabelText="Your First Name"
-              value={this.state.fname}
-              onChange={e =>this.change(e)}
-          /> <br/>
-          <TextField name="lname"
-                 hintText="Last Name"
-                 floatingLabelText="Your Last Name"
-                 value={this.state.lname}
-                 onChange={e =>this.change(e)}
-          /><br/>
+
           <TextField
               name="uname"
               hintText="Username"
@@ -122,30 +99,11 @@ console.log(requestOptions);
                  value={this.state.pwd}
                  onChange={e =>this.change(e)}
           /><br/>
-          <TextField
-              name="email"
-              hintText="Email ID"
-              floatingLabelText="Your Email ID"
-              value={this.state.email}
-              onChange={e =>this.change(e)}
-          /> <br/>
-          <TextField name="phone"
-                 hintText="Phone no."
-                 floatingLabelText="Your Phone no."
-                 value={this.state.phone}
-                 onChange={e =>this.change(e)}
-          /><br/>
-          <TextField
-              name="device"
-              hintText="Device ID"
-              floatingLabelText="Name Your Device"
-              value={this.state.device}
-              onChange={e =>this.change(e)}
-          /> <br/>
+
           <br/>
-          <RaisedButton onClick={(e)=>this.onSubmit(e)} label="SIGNUP" secondary="true" />
+          <RaisedButton onClick={(e)=>this.onSubmit(e)} label="SIGNUP" secondary={true} />
           <FlatButton label=" " />
-          <Link to='/'><RaisedButton label="Login" primary="true" /></Link>
+          <Link to='/'><RaisedButton label="Login" primary={true} /></Link>
           </form>
           <br/>
             <LinearProgress mode="indeterminate" />

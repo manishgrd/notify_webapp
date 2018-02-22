@@ -50,7 +50,6 @@ setUsers() {
 
 componentWillMount(){
 this.setUsers();
-console.log(this.props);
 }
 
 componentWillUpdate(){
@@ -70,7 +69,6 @@ componentWillUpdate(){
       message:"",
       open:false,
     });
-  console.log(this.state.values,"said: ",this.state.message);
 }
 
   handleOpen = () => {
@@ -116,7 +114,7 @@ componentWillUpdate(){
     return (
       <div>
 
-        <RaisedButton label="COMPOSE NEW" backgroundColor="Tomato" onClick={this.handleOpen} />
+        <RaisedButton label="COMPOSE NEW" secondary={true}  onClick={this.handleOpen} />
 
         <Dialog
           title="Compose a new notification"
