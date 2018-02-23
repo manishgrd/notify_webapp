@@ -100,7 +100,7 @@ componentWillUpdate(){
         secondary={true}
         onClick={(e)=>this.onSubmit(e)}
       />,
-      <FlatButton label=" "/>,
+      <FlatButton label=" " disabled={true}/>,
       <RaisedButton
         label="Close"
         primary={true}
