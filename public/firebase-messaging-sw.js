@@ -18,9 +18,8 @@ var config = {
 };
   firebase.initializeApp(config);
 
-var swmsg = firebase.messaging();
   // [START background_handler]
-  swmsg.setBackgroundMessageHandler(function(payload) {
+  firebase.messaging().setBackgroundMessageHandler(function(payload) {
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
     // Customize notification here
     const notificationTitle = 'Background Message Title';

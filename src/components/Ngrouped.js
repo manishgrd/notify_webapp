@@ -7,8 +7,8 @@ import Ntable from './Ntable';
 import * as firebase from 'firebase';
 
 const style = {
-  height: 800,
-  width: 900,
+  height: 750,
+  width: 1000,
   margin: 5,
   textAlign: 'center',
   display: 'inline-block',

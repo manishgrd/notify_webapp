@@ -5,8 +5,8 @@ import Paper from 'material-ui/Paper';
 
 
 const style = {
-  height: 1000,
-  width: 900,
+  height: 750,
+  width:1000,
   margin: 3,
   textAlign: 'center',
   display: 'inline-block',
@@ -20,7 +20,7 @@ export default class Main extends Component {
     this.state = {
       table:{
       limit:  "999",
-      height:'630px',
+      height:'550px',
       },
     };
   }
@@ -37,7 +37,7 @@ checkLoggedIn=()=> {
     this.checkLoggedIn();
   return(
     <div>
-      <Paper style={style} zDepth={3} rounded={true} >
+      <Paper style={style} zDepth={5} rounded={true} >
     <Topnavbar/>
     <Ntable data={this.state.table}/>
        </Paper>

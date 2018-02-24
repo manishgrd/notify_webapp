@@ -92,7 +92,7 @@ componentDidMount() {
         </ToolbarGroup>
       </Toolbar>
       <Paper style={style} zDepth={5} rounded={false} >
-      <img src="images/splash.png" alt="logo" width="896" height="180"/>
+      <img src="images/splash.png" alt="logo" width="996" height="200"/>
       </Paper>
       </div>
     );

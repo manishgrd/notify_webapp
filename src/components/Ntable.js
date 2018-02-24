@@ -87,6 +87,7 @@ getMessages=(user)=>{
   "args": {
       "table": "Messages",
       "columns": [
+          "id",
           "Message",
           "To",
           "From",
@@ -95,7 +96,7 @@ getMessages=(user)=>{
       "limit": this.props.data.limit,
       "order_by": [
           {
-              "column": "time",
+              "column": "id",
               "order": "desc"
           }
       ]
@@ -113,7 +114,8 @@ fetch(url, requestOptions)
 }
 
 showMessages=()=>{
- selectMsg=this.state.Messages.map((val) => {return ([ val.time,val.From,val.To,val.Message])});
+  let recentMsg=this.state.Messages.map((val) => {return ([ val.time,val.From,val.To,val.Message])});
+ selectMsg=recentMsg.reverse();
   }
 
 
