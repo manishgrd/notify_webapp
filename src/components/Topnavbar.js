@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 const style = {
   height: 160,
+  width: 996,
   margin: 2,
   textAlign: 'center',
   display: 'inline-block',

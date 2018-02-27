@@ -28,6 +28,9 @@ msgUser = (user) => {
         <ToolbarGroup>
         <Sidebar sendnotif={this.handlepass} selectUser={this.msgUser}/>
         </ToolbarGroup>
+        <ToolbarGroup >
+          <Link to='/profile'><RaisedButton label="Profile"/></Link>
+        </ToolbarGroup>
         <ToolbarGroup lastChild={false}>
           <Link to='/viewall'><RaisedButton label="ALL Notifications" primary={true} /></Link>
         </ToolbarGroup>

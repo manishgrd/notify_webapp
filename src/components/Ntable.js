@@ -14,6 +14,9 @@ import View from 'material-ui/svg-icons/action/view-list';
 import Notify from 'material-ui/svg-icons/social/notifications';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Received from 'material-ui/svg-icons/navigation/arrow-back';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
 
 
 const view = <View />;
@@ -38,7 +41,7 @@ let requestOptionsX = {
     }
 };
 
-let body = {};let selectMsg = [];
+let body = {};let selectMsg = []; let dlg =[];
 
 export default class Ntable extends Component {
 
@@ -54,11 +57,8 @@ export default class Ntable extends Component {
 
   }
 
-select = (index) => this.setState({selectedIndex: index});
+  isSelected = (index) =>{ return this.state.selected.indexOf(index) !== -1;}
 
-  isSelected = (index) => {
-    return this.state.selected.indexOf(index) !== -1;
-  };
 
   handleRowSelection = (selectedRows) => {
     this.setState({
@@ -66,7 +66,41 @@ select = (index) => this.setState({selectedIndex: index});
     });
   };
 
+handleCellClick =(rowNumber)=>{
+  dlg = selectMsg[rowNumber];
+}
+
+handleClose = () => this.setState({opend: false});
+handleOpen = () => this.setState({opend: true});
+
+handleDelete = () => {
+body = {
+    "type": "delete",
+    "args": {
+        "table": "Messages",
+        "where": {  "id": {  "$eq": dlg[0] } } }
+};
+requestOptions.body = JSON.stringify(body);
+fetch(url, requestOptions)
+.then(function(response) {
+	return response.json();
+})
+.then(function(result) {
+	console.log(result);
+})
+.catch(function(error) {
+	console.log('Request Failed:' + error);
+});
+this.handleClose();
+window.location.href = '/home';
+}
   componentDidMount() {
+    this.getUserInfo();
+  }
+
+
+
+ getUserInfo=()=>{
       fetch(urlX, requestOptionsX)    //get user info
       .then((response) => {
         return response.json();
@@ -78,7 +112,6 @@ select = (index) => this.setState({selectedIndex: index});
       .catch((error) => {
         console.log('User info retrieval:' + error);
       });
-
   }
 
 getMessages=(user)=>{
@@ -91,7 +124,8 @@ getMessages=(user)=>{
           "Message",
           "To",
           "From",
-          "time"
+          "time",
+          "Success"
       ],
       "limit": this.props.data.limit,
       "order_by": [
@@ -114,7 +148,7 @@ fetch(url, requestOptions)
 }
 
 showMessages=()=>{
-  let recentMsg=this.state.Messages.map((val) => {return ([ val.time,val.From,val.To,val.Message])});
+  let recentMsg=this.state.Messages.map((val) => {return ([val.id,val.time,val.From,val.To,val.Message])});
  selectMsg=recentMsg.reverse();
   }
 
@@ -129,6 +163,22 @@ let row = (x,i) =>
                        </TableRowColumn>)}
                </TableRow>;
 
+               const actions = [
+                 <RaisedButton
+                   label="DELETE"
+                   secondary={true}
+                   onClick={this.handleDelete}
+                 />,
+                 <FlatButton label=" " disabled={true}/>,
+                 <RaisedButton
+                   label="Close"
+                   primary={true}
+                   keyboardFocused={true}
+                   onClick={this.handleClose}
+                 />,
+               ];
+
+
       return (
         <div>
         <Tabs>
@@ -139,45 +189,56 @@ let row = (x,i) =>
           />
 
         </Tabs>
+        <Dialog
+          title={dlg[1]}
+          actions={actions}
+          modal={false}
+          open={this.state.opend}
+          onRequestClose={this.handleClose}
+        >
+         <h5><u>Message ID:</u>  {dlg[0]}</h5>
+         <strong> From : </strong> {dlg[2]}  <strong>To : </strong> {dlg[3]}
+         <h3><u>Message:</u> {dlg[4]}</h3>
 
-        <Table onRowSelection={this.handleRowSelection}  multiSelectable={false} height={this.props.data.height} fixedHeader={false} style={{ tableLayout: 'auto' }}>
-          <TableHeader>
+        </Dialog>
+        <Table onRowSelection={this.handleRowSelection} onCellClick={this.handleCellClick} multiSelectable={false} height={this.props.data.height} fixedHeader={false} style={{ tableLayout: 'auto' }}>
+          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
             <TableRow>
+              <TableHeaderColumn>MSG_ID</TableHeaderColumn>
               <TableHeaderColumn>TIME</TableHeaderColumn>
               <TableHeaderColumn>FROM</TableHeaderColumn>
               <TableHeaderColumn>TO</TableHeaderColumn>
               <TableHeaderColumn>MESSAGE </TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody displayRowCheckbox={false}>
             {selectMsg.map((x,i)=>row(x,i))}
           </TableBody>
         </Table>
         <Paper zDepth={1}>
-          <BottomNavigation selectedIndex={this.state.selectedIndex}>
+          <BottomNavigation >
             <BottomNavigationItem
               label="View"
               icon={view}
-              onClick={() => this.select(0)}
+              onClick={() => this.handleOpen()}
             />
             <BottomNavigationItem
               label="Clear"
               icon={clear}
-              onClick={() => this.select(1)}
+              onClick={() => this.handleDelete()}
             />
-            <BottomNavigationItem
-              label="Notify others"
-              icon={notify}
-              onClick={() => this.select(2)}
-            />
-          </BottomNavigation>
+           </BottomNavigation>
         </Paper>
         </div>
         )
 }
 }
+
 /*
-import Sent from 'material-ui/svg-icons/navigation/arrow-forward';
-import { Link } from 'react-router-dom'
+<BottomNavigationItem
+  label="Notify others"
+  icon={notify}
+  onClick={() => this.handleCompose()}
+/>
 
 */

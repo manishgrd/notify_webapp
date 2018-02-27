@@ -1,3 +1,4 @@
+
 import React,{Component} from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -8,14 +9,14 @@ import Paper from 'material-ui/Paper';
 import { Link } from 'react-router-dom'
 
 const style = {
-  height: 500,
+  height: 780,
   width: 500,
   margin: 10,
   display: 'inline-block',
 };
 
 
-const url = "https://auth.dankness95.hasura-app.io/v1/signup";
+const url = "https://api.dankness95.hasura-app.io/register";
 
 const requestOptions = {
     "method": "POST",
@@ -25,10 +26,14 @@ const requestOptions = {
 };
 
   export default class Signup extends Component {
-      state = {
-        uname:'',
-        pwd:'',
-      }
+    state = {
+      fname:'',
+      lname:'',
+      uname:'',
+      pwd:'',
+      email:'',
+      phone:''
+    }
 
    change = (e) => {
      this.setState({
@@ -39,8 +44,12 @@ const requestOptions = {
    onSubmit=(e) =>{
      e.preventDefault();
      this.setState({
+       fname:'',
+       lname:'',
        uname:'',
        pwd:'',
+       email:'',
+       phone:''
      });
      this.signup();
    }
@@ -48,28 +57,33 @@ const requestOptions = {
 
   signup = () => {
     let body = {
-    "provider": "username",
-    "data": {   "username": this.state.uname,
-                "password": this.state.pwd,  }   };
+    "F_Name": this.state.fname,
+    "L_Name": this.state.lname,
+    "User_Name": this.state.uname,
+    "Pass": this.state.pwd,
+    "Email_id": this.state.email,
+    "Phone_No": this.state.phone
+    };
 
-  requestOptions.body = JSON.stringify(body);
+  requestOptions.body = body;
   console.log(requestOptions);
   fetch(url, requestOptions)
-  .then(function(response) {
-  	return response.json();
+  .then((response) => {
+    return response;
   })
-  .then(function(result) {
+  .then((result) => {
   	console.log(result);
-  	let authToken = result.auth_token
-  	window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
-    if(result.auth_token!=null)
-    {   window.location.href = '/';
-      alert("AWESOME !! now login to continue");    }
-    else
-    alert("Something went wrong ! Try again !");
+    alert(result);
+  //	let authToken = result.auth_token
+  //	window.localStorage.setItem('HASURA_AUTH_TOKEN', authToken);
+  //  if (result=="Your Account has been created sucessfully !")                    //  if(result.auth_token!=null)
+  //  {   window.location.href = '/';
+  //    alert("AWESOME !! now login to continue");    }
+  //  else
+  //  alert("Something went wrong ! Try again !");
   })
   .catch(function(error) {
-  	alert('Request Failed:' + error);
+  	alert('Error:' + error);
   });
 }
 
@@ -84,7 +98,19 @@ const requestOptions = {
           <CardTitle
              title="To Signup (Register) " subtitle="Enter your Info & click SIGNUP" />
           <form>
-
+          <TextField
+              name="fname"
+              hintText="First Name"
+              floatingLabelText="Your First Name"
+              value={this.state.fname}
+              onChange={e =>this.change(e)}
+          /> <br/>
+          <TextField name="lname"
+                 hintText="Last Name"
+                 floatingLabelText="Your Last Name"
+                 value={this.state.lname}
+                 onChange={e =>this.change(e)}
+          /><br/>
           <TextField
               name="uname"
               hintText="Username"
@@ -98,7 +124,19 @@ const requestOptions = {
                  value={this.state.pwd}
                  onChange={e =>this.change(e)}
           /><br/>
-
+          <TextField
+              name="email"
+              hintText="Email ID"
+              floatingLabelText="Your Email ID"
+              value={this.state.email}
+              onChange={e =>this.change(e)}
+          /> <br/>
+          <TextField name="phone"
+                 hintText="Phone no."
+                 floatingLabelText="Your Phone no."
+                 value={this.state.phone}
+                 onChange={e =>this.change(e)}
+          /><br/>
           <br/>
           <RaisedButton onClick={(e)=>this.onSubmit(e)} label="SIGNUP" secondary={true} />
           <FlatButton label=" " disabled={true}/>

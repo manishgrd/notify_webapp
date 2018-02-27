@@ -1,5 +1,6 @@
 import React, { Component }  from 'react';
 import Paper from 'material-ui/Paper';
+import Snackbar from 'material-ui/Snackbar';
 import Topnavbar from './Topnavbar';
 import NotifDisplay from './NotifDisplay';
 import ActionsBar from './ActionsBar';
@@ -45,6 +46,8 @@ export default class Ngrouped extends Component {
         Data : ['All Offline'],
         username : "",
         hasura_id:"",
+        snack: false,
+        snackmsg: "Message Update failed !"
       };
 
     }
@@ -155,12 +158,12 @@ fetch(url, requestOptions)                      //get fcm user token from server
   this.sendDirectNotif(this.state.username,user,message,result[0].fcm_tkn); //sending notification to end-user
 })
 .catch((error)=> {
-  console.log('Token Updation:' + error);
+  console.log('FCM Retrieval:' + error);
 });
 
 }
 sendDirectNotif =(from,to,body,fcm_tkn)=> {
-  const key = "AIzaSyA1ub-EQV6yv_klcPQmzjGSYMYG-SGAsYY";
+  const key = "AIzaSyA1ub-EQV6yv_klcPQmzjGSYMYG-SGAsYY";   //need to remove this from code and build around api
   let notification = {
     'title': from,
     'body': body,
@@ -202,17 +205,17 @@ updateMessages = (from,to,message) =>{
     }
 };
 requestOptions.body = JSON.stringify(body);
-fetch(url, requestOptions)                      //get fcm user token from server
+fetch(url, requestOptions)
 .then((response)=> {
   return response.json();
 })
 .then((result)=> {
-  console.log(result);
+  this.setState({ snackmsg:"Sent Successfully !!" , snack: true });
 })
 .catch((error)=> {
-  console.log('Token Updation:' + error);
+  this.setState({ snackmsg:error , snack: true });
 });
-
+window.location.href = '/home';
 }
 
 
@@ -231,8 +234,14 @@ return(
     <Paper style={style} zDepth={5} rounded={true} >
     <Topnavbar /><br/>
     <NotifDisplay sendfcmtoken={this.sendToken}/><br/>
+    <Snackbar
+           open={this.state.snack}
+           message={this.state.snackmsg}
+           autoHideDuration={5000}
+         />
     <ActionsBar passnotif={this.handlenotif}/><br/>
     <Ntable data={this.state.table}/><br/>
+
     </Paper>
   </div>
      );

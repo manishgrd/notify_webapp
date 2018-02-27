@@ -76,6 +76,7 @@ export default class Sidebar extends React.Component {
       message:"",
       open:false,
     });
+    this.handleClose();
 }
 
    listItems(values) {
