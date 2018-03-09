@@ -1,13 +1,13 @@
 {
   "name": "Notify",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "author": "Manish Sharma",
   "dependencies": {
     "fetch": "^1.1.0",
     "firebase": "^4.9.1",
+    "form-urlencoded-post": "^1.0.1",
     "material-ui": "^0.20.0",
-    "node-fetch": "^1.7.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router": "^4.2.0",

@@ -7,23 +7,23 @@ import {
   TableRow,
   TableRowColumn,
 } from 'material-ui/Table';
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
-import Paper from 'material-ui/Paper';
-import Delete from 'material-ui/svg-icons/action/delete';
-import View from 'material-ui/svg-icons/action/view-list';
-import Notify from 'material-ui/svg-icons/social/notifications';
+//import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+//import Paper from 'material-ui/Paper';
+//import Delete from 'material-ui/svg-icons/action/delete';
+//import View from 'material-ui/svg-icons/action/view-list';
+//import Notify from 'material-ui/svg-icons/social/notifications';
 import {Tabs, Tab} from 'material-ui/Tabs';
-import Received from 'material-ui/svg-icons/navigation/arrow-back';
+//import Received from 'material-ui/svg-icons/navigation/arrow-back';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 
 
-const view = <View />;
-const notify = <Notify />;
-const clear = <Delete />;
+//const view = <View />;
+//const notify = <Notify />;
+//const clear = <Delete />;
 
-let url = "https://data.dankness95.hasura-app.io/v1/query";
+let url = "https://data.astigmatic44.hasura-app.io/v1/query";
 let authToken = window.localStorage.getItem('HASURA_AUTH_TOKEN');
 let requestOptions = {
     "method": "POST",
@@ -32,7 +32,7 @@ let requestOptions = {
         "Authorization": "Bearer " + authToken,
     }
 };
-let urlX = "https://auth.dankness95.hasura-app.io/v1/user/info";
+let urlX = "https://auth.astigmatic44.hasura-app.io/v1/user/info";
 let requestOptionsX = {
     "method": "GET",
     "headers": {
@@ -68,6 +68,7 @@ export default class Ntable extends Component {
 
 handleCellClick =(rowNumber)=>{
   dlg = selectMsg[rowNumber];
+  this.handleOpen();
 }
 
 handleClose = () => this.setState({opend: false});
@@ -77,7 +78,7 @@ handleDelete = () => {
 body = {
     "type": "delete",
     "args": {
-        "table": "Messages",
+        "table": "User_Notification_Store",
         "where": {  "id": {  "$eq": dlg[0] } } }
 };
 requestOptions.body = JSON.stringify(body);
@@ -86,13 +87,13 @@ fetch(url, requestOptions)
 	return response.json();
 })
 .then(function(result) {
-	console.log(result);
+	//console.log(result);
 })
 .catch(function(error) {
 	console.log('Request Failed:' + error);
 });
 this.handleClose();
-window.location.href = '/home';
+//window.location.href = '/home';
 }
   componentDidMount() {
     this.getUserInfo();
@@ -107,7 +108,6 @@ window.location.href = '/home';
       })
       .then((result) => {
       this.getMessages(result.username);
-
       })
       .catch((error) => {
         console.log('User info retrieval:' + error);
@@ -118,24 +118,12 @@ getMessages=(user)=>{
   body = {
   "type": "select",
   "args": {
-      "table": "Messages",
-      "columns": [
-          "id",
-          "Message",
-          "To",
-          "From",
-          "time",
-          "Success"
-      ],
+      "table": "User_Notification_Store",
+      "columns": [ "*" ],
       "limit": this.props.data.limit,
-      "order_by": [
-          {
-              "column": "id",
-              "order": "desc"
-          }
-      ]
-  }
-};
+      "order_by": [  {"column": "id",
+           "order": "desc" }  ]
+  } };
 requestOptions.body = JSON.stringify(body);
 
 fetch(url, requestOptions)
@@ -148,7 +136,7 @@ fetch(url, requestOptions)
 }
 
 showMessages=()=>{
-  let recentMsg=this.state.Messages.map((val) => {return ([val.id,val.time,val.From,val.To,val.Message])});
+  let recentMsg=this.state.Messages.map((val) => {return ([val.id,val.Time_Stamp,val.From,val.To,val.Notification])});
  selectMsg=recentMsg.reverse();
   }
 
@@ -178,19 +166,19 @@ let row = (x,i) =>
                  />,
                ];
 
-
+// icon={<Received />}
       return (
         <div>
         <Tabs>
           <Tab
-            icon={<Received />}
-            label={<h2>VIEW  RECENT  NOTIFICATION MESSAGES </h2>}
+
+            label={<h3>View Recent Notification Messages </h3>}
             onActive={this.showMessages()}
           />
 
         </Tabs>
         <Dialog
-          title={dlg[1]}
+          title={"Time: "+dlg[1]}
           actions={actions}
           modal={false}
           open={this.state.opend}
@@ -202,7 +190,7 @@ let row = (x,i) =>
 
         </Dialog>
         <Table onRowSelection={this.handleRowSelection} onCellClick={this.handleCellClick} multiSelectable={false} height={this.props.data.height} fixedHeader={false} style={{ tableLayout: 'auto' }}>
-          <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+          <TableHeader adjustForCheckbox={false} displaySelectAll={true}>
             <TableRow>
               <TableHeaderColumn>MSG_ID</TableHeaderColumn>
               <TableHeaderColumn>TIME</TableHeaderColumn>
@@ -211,34 +199,37 @@ let row = (x,i) =>
               <TableHeaderColumn>MESSAGE </TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody displayRowCheckbox={false}>
+          <TableBody displayRowCheckbox={true}>
             {selectMsg.map((x,i)=>row(x,i))}
           </TableBody>
         </Table>
-        <Paper zDepth={1}>
-          <BottomNavigation >
-            <BottomNavigationItem
-              label="View"
-              icon={view}
-              onClick={() => this.handleOpen()}
-            />
-            <BottomNavigationItem
-              label="Clear"
-              icon={clear}
-              onClick={() => this.handleDelete()}
-            />
-           </BottomNavigation>
-        </Paper>
+
         </div>
         )
 }
 }
 
 /*
-<BottomNavigationItem
-  label="Notify others"
-  icon={notify}
-  onClick={() => this.handleCompose()}
-/>
+
+<Paper zDepth={1}>
+  <BottomNavigation >
+    <BottomNavigationItem
+      label="View"
+      icon={view}
+      onClick={() => this.handleOpen()}
+    />
+    <BottomNavigationItem
+      label="Clear"
+      icon={clear}
+      onClick={() => this.handleDelete()}
+    />
+    <BottomNavigationItem
+      label="Notify others"
+      icon={notify}
+      onClick={() => this.handleCompose()}
+    />
+   </BottomNavigation>
+</Paper>
+
 
 */
