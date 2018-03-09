@@ -6,7 +6,7 @@ To get started perform the following steps on a windows 7/8/10 pc
 2.  Install Git from https://git-scm.com/download/win and start Git bash.
 3.  Create a directory ($mkdir C:\projects ) & enter it ($cd C:\projects)
 4.  Clone this repository with command ($git clone https://github.com/manishgrd/notify_webapp.git)
-5.  After cloning completes, enter directory.($cd C:\projects\notify_frontend_webapp )
+5.  After cloning completes, enter directory.($cd C:\projects\notify_webapp )
 6.  On gitbash run the command $npm install
     This will install all the required dependencies for the project.
     It should complete without error and a few warnings ( you can ignore it).
