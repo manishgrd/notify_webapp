@@ -4,6 +4,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Main from './Main'
 import * as firebase from 'firebase';
 
+
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyDcFCf97JEsGNmkrcRwWpH6QEh_2Vx7YpA",

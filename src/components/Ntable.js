@@ -136,7 +136,7 @@ fetch(url, requestOptions)
 }
 
 showMessages=()=>{
-  let recentMsg=this.state.Messages.map((val) => {return ([val.id,val.Time_Stamp,val.From,val.To,val.Notification])});
+  let recentMsg=this.state.Messages.map((val) => {return ([val.id,val.Time_Stamp,val.From,val.To,val.Title,val.Notification])});
  selectMsg=recentMsg.reverse();
   }
 
@@ -196,6 +196,7 @@ let row = (x,i) =>
               <TableHeaderColumn>TIME</TableHeaderColumn>
               <TableHeaderColumn>FROM</TableHeaderColumn>
               <TableHeaderColumn>TO</TableHeaderColumn>
+              <TableHeaderColumn>TITLE</TableHeaderColumn>
               <TableHeaderColumn>MESSAGE </TableHeaderColumn>
             </TableRow>
           </TableHeader>
